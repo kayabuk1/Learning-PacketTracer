@@ -1,0 +1,226 @@
+InRouter#show run
+Building configuration...
+
+Current configuration : 1460 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname InRouter
+!
+!
+!
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+!
+!
+ip dhcp excluded-address 172.17.1.1 172.17.1.31
+ip dhcp excluded-address 172.17.1.201 172.17.1.254
+!
+ip dhcp pool INTERNAL
+ network 172.17.1.0 255.255.255.0
+ default-router 172.17.1.254
+ dns-server 10.0.100.102
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524A18W-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.0.100.1 255.255.255.0
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 172.17.1.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.0.100.254 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp 10.0.100.0 0.0.0.255 host 10.0.100.1
+ permit icmp 10.0.100.0 0.0.0.255 172.17.1.0 0.0.0.255
+ip access-list extended OUTSIDE-OUT
+ permit ip any any
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cisco
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 15 0
+ password tPass
+ login
+!
+!
+!
+end
+
+ExRouter#show run
+Building configuration...
+
+Current configuration : 1785 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ExRouter
+!
+!
+!
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524K839-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 201.10.0.5 255.255.255.248
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.0.100.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat pool NAPT 201.10.0.3 201.10.0.3 netmask 255.255.255.248
+ip nat inside source list 1 pool NAPT overload
+ip nat inside source static 10.0.100.101 201.10.0.1 
+ip nat inside source static 10.0.100.102 201.10.0.2 
+ip classless
+ip route 172.17.1.0 255.255.255.0 10.0.100.1 
+ip route 0.0.0.0 0.0.0.0 201.10.0.6 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 172.17.1.0 0.0.0.31
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 201.10.0.5
+ permit icmp any host 201.10.0.1
+ permit icmp any host 201.10.0.2
+ permit udp any host 201.10.0.1 eq domain
+ permit tcp any host 201.10.0.1 eq domain
+ permit tcp any host 201.10.0.1 eq smtp
+ permit tcp any host 201.10.0.1 eq www
+ip access-list extended OUTSIDE-OUT
+ permit ip host 201.10.0.1 any
+ permit ip host 201.10.0.2 any
+ permit ip host 201.10.0.3 any
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cisco
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 15 0
+ password tPass
+ login
+!
+!
+!
+end
+!
+end
