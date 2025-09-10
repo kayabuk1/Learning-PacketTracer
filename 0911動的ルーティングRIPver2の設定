@@ -1,0 +1,227 @@
+ExRouter(config-line)#do show run
+Building configuration...
+
+Current configuration : 1786 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ExRouter
+!
+!
+!
+enable password epAss
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524K839-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 210.1.1.1 255.255.255.252
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 210.10.1.2 255.255.255.240
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+ version 2
+ network 210.1.1.0
+ network 210.10.1.0
+ default-information originate
+ no auto-summary
+!
+ip nat pool NAPT 210.10.1.4 210.10.1.4 netmask 255.255.255.240
+ip nat inside source list 1 pool NAPT overload
+ip classless
+ip route 0.0.0.0 0.0.0.0 210.1.1.2 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 192.168.83.0 0.0.0.31
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 210.10.1.1
+ permit icmp any host 210.10.1.10
+ permit tcp any host 210.10.1.1 eq smtp
+ permit tcp any host 210.10.1.1 eq domain
+ permit udp any host 210.10.1.1 eq domain
+ permit tcp any host 210.10.1.1 eq www
+ip access-list extended OUTSIDE-OUT
+ permit icmp host 210.10.1.1 any
+ permit icmp host 210.10.1.10 any
+ permit icmp host 210.10.1.4 any
+ permit ip host 210.10.1.1 any
+ permit ip host 210.10.1.10 any
+ permit ip host 210.10.1.4 any
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cpAss
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 60 0
+ password tpAss
+ logging synchronous
+ login
+!
+!
+!
+end
+
+
+InRouter(config-router)#do show run
+Building configuration...
+
+Current configuration : 1176 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname InRouter
+!
+!
+!
+enable password epAss
+!
+!
+ip dhcp excluded-address 192.168.83.1 192.168.83.99
+ip dhcp excluded-address 192.168.83.201 192.168.83.254
+!
+ip dhcp pool INTERNAL
+ network 192.168.83.0 255.255.255.0
+ default-router 192.168.83.254
+ dns-server 210.10.1.1
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX152420G8-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 210.10.1.3 255.255.255.240
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 192.168.83.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+ version 2
+ passive-interface GigabitEthernet0/1
+ network 192.168.83.0
+ network 210.10.1.0
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cpAss
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 60 0
+ password tpAss
+ logging synchronous
+ login
+!
+!
+!
+end
+
+en
