@@ -1,0 +1,24 @@
+R1#show history 
+  show cdp neighbors detail 
+  show ip interface 
+  conf t
+  ping 192.169.2.2
+  telnet 192.169.2.2 
+  telnet 192.169.2.2
+  ping 192.169.2.2
+  conf t
+  telnet 192.168.2.2
+  show history 
+
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/3/7 ms
+
+
+Serial0/0/0 is up, line protocol is up (connected)
+  Hardware is HD64570
+  Internet address is 192.168.2.2/24
+  
