@@ -1,0 +1,22 @@
+R2(config-if)#do show int se 0/0/0
+Serial0/0/0 is up, line protocol is down (disabled)   // interfaceは物理的につながれている(is up)だけれど、プロトコルでの通信が出来ない(line prtocol is down)。
+
+R2(config-if)#do show his
+  interface serial 0/0/0
+  encapsulation hdlc
+  do wr
+  interface serial 0/0/0
+  do show his
+
+R2#show interfaces serial 0/0/0
+Serial0/0/0 is up, line protocol is up (connected)
+
+R1#show interfaces serial 0/0/0
+Serial0/0/0 is up, line protocol is up (connected)
+
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/4/8 ms
