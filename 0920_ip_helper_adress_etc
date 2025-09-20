@@ -1,0 +1,215 @@
+InRouter(config)#do show run
+Building configuration...
+
+Current configuration : 1475 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname InRouter
+!
+!
+!
+enable secret 5 $1$mERr$toVTd9w7HFzzY1fZ1BzIk0
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524DAQ6-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.1.100.253 255.255.255.0
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 192.168.1.254 255.255.255.0
+ ip helper-address 10.1.100.1
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.1.100.254 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 10.1.100.253
+ permit udp host 10.1.100.1 eq bootps host 192.168.1.254 eq bootps
+ip access-list extended OUTSIDE-OUT
+ permit icmp 0.0.0.0 192.168.1.15 any
+ permit ip 0.0.0.0 192.168.1.15 any
+ permit icmp 192.168.1.0 0.0.0.255 host 10.1.100.1
+ permit ip 192.168.1.0 0.0.0.255 host 10.1.100.1
+!
+no cdp run
+!
+!
+!
+!
+!
+line con 0
+ history size 25
+ exec-timeout 0 0
+ password Cpass
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password Tpass
+ login
+ history size 25
+!
+!
+!
+end
+
+ExRouter(config)#do wr
+Building configuration...
+[OK]
+ExRouter(config)#do sh run
+Building configuration...
+
+Current configuration : 1191 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ExRouter
+!
+!
+!
+enable secret 5 $1$mERr$toVTd9w7HFzzY1fZ1BzIk0
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524P0CP-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 210.1.1.1 255.255.255.248
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.1.100.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat pool NAPT 210.1.1.4 210.1.1.5 netmask 255.255.255.248
+ip nat inside source list 1 pool NAPT overload
+ip nat inside source static 10.1.100.1 210.1.1.6 
+ip classless
+ip route 192.168.1.0 255.255.255.0 10.1.100.253 
+ip route 0.0.0.0 0.0.0.0 210.1.1.2 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 192.168.1.0 0.0.0.15
+!
+no cdp run
+!
+!
+!
+!
+!
+line con 0
+ history size 25
+ exec-timeout 0 0
+ password Cpass
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ exec-timeout 5 0
+ password Tpass
+ login
+ history size 25
+!
+!
+!
+end
+
