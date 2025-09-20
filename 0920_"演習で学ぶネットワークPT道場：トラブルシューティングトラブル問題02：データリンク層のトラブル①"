@@ -1,0 +1,39 @@
+R1#show int s0/0/0
+Serial0/0/0 is up, line protocol is down (disabled)
+  Hardware is HD64570
+  Internet address is 192.168.2.1/24
+  MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+
+R2#show int s0/0/0
+Serial0/0/0 is up, line protocol is down (disabled)
+  Hardware is HD64570
+  Internet address is 192.168.2.2/24
+  MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation PPP, loopback not set, keepalive set (10 sec)
+
+R1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#int s0/0/0
+R1(config-if)#encapsulation ?
+  frame-relay  Frame Relay networks
+  hdlc         Serial HDLC synchronous
+  ppp          Point-to-Point protocol
+R1(config-if)#encapsulation ppp
+R1(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Serial0/0/0, changed state to up
+
+R1(config-if)#^Z
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
+
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/5/11 ms
+
+R1#
