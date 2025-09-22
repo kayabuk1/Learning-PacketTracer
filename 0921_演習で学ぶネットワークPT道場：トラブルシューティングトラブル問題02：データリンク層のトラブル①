@@ -1,0 +1,34 @@
+R1#show interfaces 
+Serial0/0/0 is up, line protocol is down (disabled)
+  Hardware is HD64570
+  Internet address is 192.168.2.1/24
+  MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+
+R1#show int s0/0/0
+Serial0/0/0 is up, line protocol is up (connected)
+  Hardware is HD64570
+  Internet address is 192.168.2.1/24
+  MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation PPP, loopback not set, keepalive set (10 sec)
+
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/6/22 ms
+
+R1#sho his
+  en
+  show cdp neighbors 
+  show cdp neighbors detail 
+  show interfaces 
+  int s0/0/0
+  conf t
+  show int s0/0/0
+  ping 192.168.2.2
+  wr
+  sho his
