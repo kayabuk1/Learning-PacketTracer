@@ -1,0 +1,145 @@
+C:\>ping 192.168.1.2
+
+Pinging 192.168.1.2 with 32 bytes of data:
+
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 00E0.F9C3.A170
+   Link-local IPv6 Address.........: FE80::2E0:F9FF:FEC3:A170
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.1
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-BB-E7-37-97-00-E0-F9-C3-A1-70
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0003.E430.389C
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-BB-E7-37-97-00-E0-F9-C3-A1-70
+   DNS Servers.....................: ::
+                                     0.0.0.0
+S1#show vlan 
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                                                Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Fa0/23, Fa0/24
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+1002 fddi  101002     1500  -      -      -        -    -        0      0   
+1003 tr    101003     1500  -      -      -        -    -        0      0   
+1004 fdnet 101004     1500  -      -      -        ieee -        0      0   
+1005 trnet 101005     1500  -      -      -        ibm  -        0      0   
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+
+Remote SPAN VLANs
+------------------------------------------------------------------------------
+
+Primary Secondary Type              Ports
+------- --------- ----------------- ------------------------------------------
+
+S1# show mac address-table 
+          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+
+** S1#show interface status **//線がつながっているのに全てnotconnectはおかしい
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/2                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/3                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/4                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/5                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/6                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/7                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/8                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/9                        notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/10                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/11                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/12                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/13                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/14                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/15                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/16                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/17                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/18                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/19                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/20                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/21                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/22                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/23                       notconnect   trunk      auto    auto  10/100BaseTX
+Fa0/24                       notconnect   trunk      auto    auto  10/100BaseTX
+
+S1#show interfaces f0/1 
+FastEthernet0/1 is down, line protocol is down (disabled)
+  Hardware is Lance, address is 0004.9acb.640a (bia 0004.9acb.640a)
+ BW 100000 Kbit, DLY 1000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+
+C:\>ping 192.168.1.2
+
+Pinging 192.168.1.2 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.1.2: bytes=32 time=3ms TTL=128
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 3ms, Average = 1ms
+
+C:\>ping 192.168.3.2
+
+Pinging 192.168.3.2 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.3.2: bytes=32 time<1ms TTL=126
+Reply from 192.168.3.2: bytes=32 time<1ms TTL=126
+Reply from 192.168.3.2: bytes=32 time<1ms TTL=126
+
+Ping statistics for 192.168.3.2:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
