@@ -1,0 +1,68 @@
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+
+R1#show int s0/0/0
+Serial0/0/0 is up, line protocol is up (connected)
+  Hardware is HD64570
+  Internet address is 192.168.2.1/24
+  MTU 1500 bytes, BW 1544 Kbit, DLY 20000 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation HDLC, loopback not set, keepalive set (10 sec)
+
+R1#show cdp neighbors 
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+R2           Ser 0/0/0        147            R       C1900       Ser 0/0/0
+
+R1#show cdp neighbors detail 
+
+Device ID: R2
+Entry address(es): 
+ ** IP address : 192.169.2.2**
+Platform: cisco C1900, Capabilities: Router
+Interface: Serial0/0/0, Port ID (outgoing port): Serial0/0/0
+Holdtime: 174
+
+Version :
+Cisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2012 by Cisco Systems, Inc.
+Compiled Thurs 5-Jan-12 15:41 by pt_team
+
+advertisement version: 2
+Duplex: full
+
+R1#sho his
+  en
+  ping 192.168.2.2
+  show int s0/0/0
+  show cdp neighbors 
+  show cdp neighbors detail 
+  conf t
+  telnet 192.169.2.2
+  conf t
+  sho his
+R1#sho his
+  show cdp neighbors detail 
+  conf t
+  telnet 192.169.2.2
+  conf t
+  sho his
+  telnet 192.169.2.2
+  conf t
+  ping 192.168.2.2
+  telnet 192.168.2.2
+  sho his
+
+R1#ping 192.168.2.2
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/3/6 ms
+
