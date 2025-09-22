@@ -1,0 +1,135 @@
+「Destination host unreachable」この応答は、
+pingを打ったPC1ではなく、ゲートウェイであるR1 (192.168.1.1) から返されている。
+これは「私（R1）があなた（PC1）の代わりに宛先へパケットを送ろうとしたけれど、
+宛先までの行き方（ルート）が分かりませんでした」という意味。
+
+Cisco Packet Tracer PC Command Line 1.0
+C:\>ping 192.168.3.2
+
+Pinging 192.168.3.2 with 32 bytes of data:
+
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Request timed out.
+Reply from 192.168.1.1: Destination host unreachable.
+
+Ping statistics for 192.168.3.2:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 192.168.3.1
+
+Pinging 192.168.3.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Request timed out.
+
+Ping statistics for 192.168.3.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 192.168.2.2
+
+Pinging 192.168.2.2 with 32 bytes of data:
+
+Reply from 192.168.1.1: Destination host unreachable.
+Request timed out.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+
+Ping statistics for 192.168.2.2:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 192.168.2.1
+
+Pinging 192.168.2.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+
+Ping statistics for 192.168.2.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>192.168.1.1
+Invalid Command.
+
+C:\>ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ipconfig
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Link-local IPv6 Address.........: FE80::204:9AFF:FEE4:B8ED
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.2
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: ::
+                                     192.168.1.1
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: 
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+
+C:\>traceroute
+Invalid Command.
+
+C:\>traceroute 192.168.3.2
+Invalid Command.
+
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0004.9AE4.B8ED
+   Link-local IPv6 Address.........: FE80::204:9AFF:FEE4:B8ED
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.2
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: ::
+                                     192.168.1.1
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-4A-52-57-11-00-04-9A-E4-B8-ED
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0000.0C49.E93A
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-4A-52-57-11-00-04-9A-E4-B8-ED
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+
+
