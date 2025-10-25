@@ -1,0 +1,318 @@
+第14回課題
+以下の内容に従い、ルータ「InRouter」、「ExRouter」の設定を行いなさい。
+
+ネットワーク構成図
+
+
+設定内容
+1. ホスト名とパスワードの設定
+各ルータのホスト名と各パスワードを以下の通り設定しなさい。なお、イネーブルパスワードは暗号化すること。その他のパスワードは暗号化しないこと。
+
+ホスト名	イネーブル
+パスワード	コンソール
+パスワード	telnet
+パスワード
+ExRouter	cisco	cisco	tPass
+InRouter	cisco	cisco	tPass
+2. ターミナル環境（2台ともに設定）の設定
+ターミナル環境を以下の通り設定しなさい。
+
+コマンド誤入力によるDNS検索を行わない。
+タイムゾーンを日本標準時に設定する。
+コンソール接続時、自動ログアウト機能を無効にする。
+コンソール接続時、表示割込みに対する入力文字列の補完を有効にする。
+telnet接続時、15分操作が行われなかった場合、自動ログアウトする。
+3. インターフェースの設定
+「ネットワーク構成図」に基づき各ルータのインターフェースにIPアドレスを設定しなさい。
+
+4. アドレス変換の設定
+「事業所内部ネットワーク」、「DMZ」はプライベートアドレスにて構成される。ISPからは201.10.0.0/29のグローバルアドレスが割り当てられている。
+
+ExRouterにてアドレス変換を以下の通り設定しなさい。また、「InRouter」にはアドレス変換を設定してはならない。
+
+送信元が172.17.1.1～172.17.1.31（標準ACL 1番で定義）のパケットは、「ExRouter」にて送信元プライベートIPアドレスをグローバルIPアドレス201.10.0.3（アドレスプール「NAPT」で定義）へ変換し、複数台のPCが同時に外部と通信を行えるようにNAPT設定すること。
+「sv1」を外部ネットワークと相互接続可能とするために、「sv1」のプライベートIPアドレスをグローバルIPアドレス201.10.0.1と一対一に対応付けること。
+「sv2」を外部ネットワークと相互接続可能とするために、「sv2」のプライベートIPアドレスをグローバルIPアドレス201.10.0.2と一対一に対応付けること。
+5. ルーティングの設定
+「ExRouter」の設定
+「事業所内部ネットワーク」、「DMZ」から「外部ネットワーク」への通信が可能となるように、デフォルトルートを登録すること。
+「事業所内部ネットワーク」との通信が可能となるように静的経路情報を登録すること。
+「InRouter」の設定
+「事業所内部ネットワーク」から「外部ネットワーク」への通信が可能となるように、デフォルトルートを登録すること。
+6. DHCPサーバの設定
+「事業所内部ネットワーク」に接続した端末に対して、172.17.1.0/24のIPアドレスを配布する。ただし、172.17.1.1～172.17.1.31及び172.17.1.201～172.17.1.254のIPアドレスは除外すること。
+DNSサーバとして「sv2」のアドレスを配布すること。
+デフォルトゲートウェイのアドレスを配布すること。
+7. アクセス制御の設定
+「ExRouter」の設定
+外部インタフェース(Gig0/0)に以下のアクセス制御を設定すること。
+着信トラフィック（名前付き拡張ACL「OUTSIDE-IN」で定義）
+発信トラフィックの戻りトラフィックを許可する。
+「ExRouter」、「sv1」、「sv2」へのICMPトラフィックを許可する。
+「sv1」上のDNSサービス、WWWサービス、SMTPサービスへのトラフィックを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-IN」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	ICMP	全て	全て	エコー応答のみ
+20	許可	UDP	全て	DNS	全て	全て	
+30	許可	TCP	全て	全て	全て	全て	ACKまたはRSTがオンの場合のみ
+40	許可	ICMP	全て	ExRouter	
+50	許可	ICMP	全て	sv1	
+60	許可	ICMP	全て	sv2	
+70	許可	UDP	全て	全て	sv1	DNS	
+80	許可	TCP	全て	全て	sv1	DNS	
+90	許可	TCP	全て	全て	sv1	SMTP	
+100	許可	TCP	全て	全て	sv1	WWW	
+発信トラフィック（名前付き拡張ACL「OUTSIDE-OUT」で定義）
+「sv1」及び「sv2」からの発信トラフィックを許可する。
+NAPTされた発信トラフィックを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-OUT」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	IP	sv1	全て	
+20	許可	IP	sv2	全て	
+30	許可	IP	NAPTアドレス	全て	
+内部インタフェース(Gig0/1)にはアクセス制御を設定しない。
+「InRouter」の設定
+外部インタフェース(Gig0/0)に以下のアクセス制御を設定する。
+着信トラフィック（名前付き拡張ACL「OUTSIDE-IN」で定義）
+発信トラフィックの戻りトラフィックを許可する。
+DMZから「InRouter」、「事業所内部ネットワーク」へのICMPトラフィックを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-IN」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	ICMP	全て	全て	エコー応答のみ
+20	許可	UDP	全て	DNS	全て	全て	
+30	許可	TCP	全て	全て	全て	全て	ACKまたはRSTがオンの場合のみ
+40	許可	ICMP	DMZ	InRouter	
+50	許可	ICMP	DMZ	事業所内部ネットワーク	
+発信トラフィック（名前付き拡張ACL「OUTSIDE-OUT」で定義）
+すべて許可する。
+名前付き拡張ACL「OUTSIDE-OUT」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+
+InRouter(config)#do sho run
+Building configuration...
+
+Current configuration : 1125 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname InRouter
+!
+!
+!
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+!
+!
+ip dhcp excluded-address 172.17.1.1 172.17.1.31
+ip dhcp excluded-address 172.17.1.201 172.17.1.254
+!
+ip dhcp pool INTERNAL
+ network 172.17.1.0 255.255.255.0
+ default-router 172.17.1.254
+ dns-server 10.0.100.102
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524A18W-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.0.100.1 255.255.255.0
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 172.17.1.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.0.100.254 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cisco
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 3
+ login
+line vty 4
+ exec-timeout 15 0
+ password tPass
+ login
+!
+!
+!
+end
+
+
+InRouter(config)#
+
+ExRouter#sho run
+Building configuration...
+
+Current configuration : 1479 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ExRouter
+!
+!
+!
+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524K839-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 201.10.0.5 255.255.255.248
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.0.100.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat pool NAPT 201.10.0.3 201.10.0.3 netmask 255.255.255.248
+ip nat inside source list 1 pool NAPT overload
+ip nat inside source static 10.0.100.101 201.10.0.1 
+ip nat inside source static 10.0.100.102 201.10.0.2 
+ip classless
+ip route 172.17.1.0 255.255.255.0 10.0.100.1 
+ip route 0.0.0.0 0.0.0.0 201.10.0.6 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 172.17.1.0 0.0.0.31
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 201.10.0.5
+ permit icmp any host 201.10.0.1
+ permit icmp any host 201.10.0.2
+ permit udp any host 201.10.0.1
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cisco
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 3
+ login
+line vty 4
+ exec-timeout 15 0
+ password tPass
+ login
+!
+!
+!
+end
+
+
+ExRouter#
+10	許可	IP	全て	全て	
+内部インタフェース(Gig0/1)にはアクセス制御を設定しない。
