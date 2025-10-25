@@ -1,0 +1,339 @@
+第10回課題6回目
+競技課題（第10回）
+以下の内容に従い、ルータ「InRouter」、「ExRouter」の設定を行いなさい。
+
+ネットワーク構成図
+
+
+設定内容
+1. ホスト名とパスワードの設定
+各ルータのホスト名と各パスワードを以下の通り設定しなさい。なお、パスワードは暗号化しないこと。
+
+ホスト名	イネーブル
+パスワード	コンソール
+パスワード	telnet
+パスワード
+ExRouter	epAss	cpAss	tpAss
+InRouter	epAss	cpAss	tpAss
+2. ターミナル環境（2台ともに設定）の設定
+ターミナル環境を以下の通り設定しなさい。
+
+コマンド誤入力によるDNS検索を行わない。
+タイムゾーンを日本標準時に設定する。
+サーバPC（IP 10.1.100.1）を「sv1」というホスト名で指定できるようにする。
+コンソール接続時、常に特権モードとする。
+コンソール接続時、自動ログアウト機能を無効にする。
+コンソール接続時、表示割りみに対する入力文字列の補完を有効にする。
+telnet接続時、1時間操作が行われなかった場合、自動ログアウトする。
+3. インターフェースの設定
+「ネットワーク構成図」に基づき各ルータのインターフェースにIPアドレスを設定しなさい。
+
+4. アドレス変換の設定
+事業所内部ネットワーク及びDMZはプライベートアドレスにて構成される。ISPからは210.1.1.0/29のグローバルアドレスが割り当てられている。事業所内部ネットワークにおけるプライベートアドレスのうち管理用アドレス帯を192.168.1.1～63とする。
+
+ExRouterにてアドレス変換を以下の通り設定しなさい。
+
+管理用アドレス帯192.168.1.1～63（標準ACL 1番で定義）から外部ネットワークへのアクセスを可能とする。そのため、送信元アドレスがこのアドレス帯のパケットは、ExRouterにて送信元アドレスを210.1.1.3グローバルアドレス（アドレスプール「NAPT」で定義）へ変換し、複数台のPCが同時に外部と通信を行えるようにNAPT設定すること。事業所内部ネットワーク内の上記以外のアドレスから外部ネットワークへの直接的な通信はできないものとする。
+サーバPCを外部ネットワークと相互接続可能とするために、サーバPCのIPアドレスを210.1.1.6グローバルアドレスと一対一に対応付けること。
+5. ルーティングの設定
+ルーティングについて以下の通り設定しなさい。
+
+各ルータに静的に経路情報を登録し各サブネットでの通信を可能とすること。デフォルトルートを登録し事業所内部ネットワーク及びDMZから外部ネットワークへのパケット転送を可能とすること。
+6. アクセス制御の設定
+アクセス制御を以下の通り設定しなさい。
+
+ExRouter及びInRouter共通で次のアクセス制御を設定する。
+各ルータに対するtelnet接続は事業所内部ネットワークからのみ許可する。
+名前付き標準ACL「VTY-IN」
+番号	許可／拒否	送信元
+10	許可	事業所内部NW
+ExRouterに次の条件を満たすアクセス制御を設定する。
+外側インタフェース(Gig0/0)に以下のアクセス制御を設定する。
+着信トラフィックについて（名前付き拡張ACL「OUTSIDE-IN」で定義）
+発信トラフィックの戻りトラフィックを許可する。
+ExRouterへのICMPを許可する。
+サーバPCへのICMPを許可する。
+サーバPC上のDNSサービス、SMTPサービス、WWWサービス、SSHサービスへのトラフィックを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-IN」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	ICMP	全て	全て	エコー応答のみ
+20	許可	UDP	全て	DNS	全て	全て	
+30	許可	TCP	全て	全て	全て	全て	ACKまたはRSTがオンの場合のみ
+40	許可	ICMP	全て	ExRouter	
+50	許可	ICMP	全て	サーバPC	
+60	許可	TCP	全て	全て	サーバPC	DNS	
+70	許可	UDP	全て	全て	サーバPC	DNS	
+80	許可	TCP	全て	全て	サーバPC	SMTP	
+90	許可	TCP	全て	全て	サーバPC	WWW	
+100	許可	TCP	全て	全て	サーバPC	SSH	
+発信トラフィックについて（名前付き拡張ACL「OUTSIDE-OUT」で定義）
+サーバPCからの発信トラフィックを許可する。
+NAPTされた発信トラフィックを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-OUT」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	IP	サーバPC	全て	
+20	許可	IP	210.1.1.3	全て	
+内側インタフェース(Gig0/1)にはアクセス制御を設定しない。
+InRouterに次の条件を満たすアクセス制御を設定する。
+外側インタフェース(Gig0/0)に以下のアクセス制御を設定する。
+着信トラフィックについて（名前付き拡張ACL「OUTSIDE-IN」で定義）
+発信トラフィックの戻りトラフィックを許可する。
+InRouterへのICMPを許可する。
+上記以外は許可しない。
+名前付き拡張ACL「OUTSIDE-IN」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	ICMP	全て	全て	エコー応答のみ
+20	許可	UDP	全て	DNS	全て	全て	
+30	許可	TCP	全て	全て	全て	全て	ACKまたはRSTがオンの場合のみ
+40	許可	ICMP	全て	InRouter	
+発信トラフィックについて（名前付き拡張ACL「OUTSIDE-OUT」で定義）
+全て許可する。
+名前付き拡張ACL「OUTSIDE-OUT」
+番号	許可
+拒否	プロトコル	送信元	宛先	その他の条件
+アドレス	ポート	アドレス	ポート
+10	許可	IP	全て	全て	
+内側インタフェース(Gig0/1)にはアクセス制御を設定しない。
+
+InRouter(config)#do sho run
+Building configuration...
+
+Current configuration : 1322 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname InRouter
+!
+!
+!
+enable password epAss
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX152420G8-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip host sv1 10.1.100.1 
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.1.100.253 255.255.255.0
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 192.168.1.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.1.100.254 
+!
+ip flow-export version 9
+!
+!
+ip access-list standard VTY-IN
+ permit 192.168.1.0 0.0.0.255
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 10.1.100.253
+ip access-list extended OUTSIDE-OUT
+ permit ip any any
+!
+no cdp run
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cpAss
+ logging synchronous
+ login
+ privilege level 15
+!
+line aux 0
+!
+line vty 0 4
+ access-class VTY-IN in
+ exec-timeout 60 0
+ password tpAss
+ logging synchronous
+ login
+!
+!
+!
+end
+
+ExRouter(config)#do sho run
+Building configuration...
+
+Current configuration : 1832 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ExRouter
+!
+!
+!
+enable password epAss
+!
+!
+!
+clock timezone JST 9
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO1941/K9 sn FTX1524K839-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip host sv1 10.1.100.1 
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 210.1.1.1 255.255.255.248
+ ip access-group OUTSIDE-IN in
+ ip access-group OUTSIDE-OUT out
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.1.100.254 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat pool NAPT 210.1.1.3 210.1.1.3 netmask 255.255.255.248
+ip nat inside source list 1 pool NAPT overload
+ip nat inside source static 10.1.100.1 210.1.1.6 
+ip classless
+ip route 192.168.1.0 255.255.255.0 10.1.100.253 
+ip route 0.0.0.0 0.0.0.0 210.1.1.2 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 192.168.1.0 0.0.0.63
+ip access-list standard VTY-IN
+ permit 192.168.1.0 0.0.0.255
+ip access-list extended OUTSIDE-IN
+ permit icmp any any echo-reply
+ permit udp any eq domain any
+ permit tcp any any established
+ permit icmp any host 210.1.1.1
+ permit icmp any host 210.1.1.6
+ permit tcp any host 210.1.1.6 eq domain
+ permit udp any host 210.1.1.6 eq domain
+ permit tcp any host 210.1.1.6 eq smtp
+ permit tcp any host 210.1.1.6 eq www
+ permit tcp any host 210.1.1.6 eq 22
+ip access-list extended OUTSIDE-OUT
+ permit ip host 210.1.1.6 any
+ permit ip host 210.1.1.3 any
+!
+no cdp run
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password cpAss
+ logging synchronous
+ login
+ privilege level 15
+!
+line aux 0
+!
+line vty 0 4
+ access-class VTY-IN in
+ exec-timeout 60 0
+ password tpAss
+ logging synchronous
+ login
+!
+!
+!
+end
+
+
+ExRouter(config)InRouter(config)#
